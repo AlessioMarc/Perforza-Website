@@ -706,23 +706,28 @@ button:focus-visible {
 
 .gallery__grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--g);
-  row-gap: clamp(28px, 4vw, 56px);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(28px, 3.5vw, 48px) var(--g);
 }
-.g-item { position: relative; align-self: start; overflow: hidden; --ch: 22px; }
-.g-item--1 { grid-column: 1 / 8; grid-row: 1; }
-.g-item--2 { grid-column: 9 / 13; grid-row: 1 / 3; margin-top: clamp(40px, 7vw, 110px); }
-.g-item--3 { grid-column: 1 / 6; grid-row: 2; align-self: center; }
-.g-item--4 { grid-column: 6 / 9; grid-row: 2; margin-top: clamp(16px, 3vw, 48px); }
-.g-item--5 { grid-column: 1 / 7; grid-row: 3; }
-.g-item--6 { grid-column: 7 / 13; grid-row: 3; margin-top: clamp(30px, 5vw, 72px); }
-.g-item--video { grid-column: 1 / 8; }
+/* Ogni foto occupa 2 colonne su 6 (3 per riga); .g-item--wide ne occupa 4.
+   Le righe hanno la stessa altezza e i bordi restano allineati. */
+.g-item {
+  position: relative;
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  --ch: 22px;
+}
+.g-item--wide,
+.g-item--video { grid-column: span 4; }
 
 .g-btn {
   position: relative;
   display: block;
+  flex: 1 1 auto;
   width: 100%;
+  aspect-ratio: 4 / 5;
   padding: 0;
   border: 0;
   background: var(--navy);
@@ -731,9 +736,15 @@ button:focus-visible {
   clip-path: polygon(0 0, calc(100% - var(--ch)) 0, 100% var(--ch), 100% 100%, var(--ch) 100%, 0 calc(100% - var(--ch)));
 }
 .g-btn img {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform .8s var(--ease), opacity .4s;
 }
+.g-item--wide .g-btn,
+.g-item--video .g-btn { aspect-ratio: auto; min-height: 220px; }
 .g-btn:hover img,
 .g-btn:focus-visible img { transform: scale(1.05); opacity: .9; }
 /* etichetta che entra dal basso */
@@ -1108,20 +1119,18 @@ button:focus-visible {
   .site-header__call { display: inline-flex; }
 }
 
-/* Galleria: da tablet in giù, composizione a 2 colonne */
+/* Galleria: da tablet in giù, 2 colonne (2 + 2 + foto larga a tutta larghezza) */
 @media (max-width: 899px) {
   .gallery__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
-  .g-item { margin-top: 0; }
-  .g-item--1 { grid-column: 1 / -1; grid-row: 1; }
-  .g-item--2 { grid-column: 1; grid-row: 2; }
-  .g-item--4 { grid-column: 2; grid-row: 2; align-self: end; }
-  .g-item--3 { grid-column: 1 / -1; grid-row: 3; align-self: start; }
-  .g-item--5 { grid-column: 1 / -1; grid-row: 4; }
-  .g-item--6 { grid-column: 1 / -1; grid-row: 5; }
-  .g-item--video { grid-column: 1 / -1; grid-row: auto; }
+  .g-item { grid-column: span 1; }
+  .g-item--wide,
+  .g-item--video { grid-column: 1 / -1; }
+  .g-item--wide .g-btn,
+  .g-item--video .g-btn { aspect-ratio: 4 / 3; }
 }
 
 @media (max-width: 640px) {
+  .g-item { --ch: 14px; }
   body { font-size: 1.125rem; }
   .btn--large { width: 100%; padding-inline: 1.2rem; }
   .hero__actions { flex-direction: column; padding-right: 8px; }
